@@ -1,0 +1,75 @@
+<div class="container">
+  <div class="header">
+    <h1>📝 Minhas Tarefas</h1>
+    <button mat-raised-button color="primary" (click)="abrirFormulario()">
+      <mat-icon>add</mat-icon>
+      Nova Tarefa
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <mat-spinner></mat-spinner>
+    <p>Carregando tarefas...</p>
+  </div>
+
+  <div *ngIf="!loading && tarefas.length === 0" class="empty-state">
+    <mat-icon>inbox</mat-icon>
+    <h2>Nenhuma tarefa cadastrada</h2>
+    <p>Comece criando sua primeira tarefa!</p>
+    <button mat-stroked-button color="primary" (click)="abrirFormulario()">
+      <mat-icon>add</mat-icon>
+      Criar primeira tarefa
+    </button>
+  </div>
+
+  <div class="tarefas-grid" *ngIf="!loading && tarefas.length > 0">
+    <mat-card *ngFor="let tarefa of tarefas" [class.concluida]="tarefa.concluida">
+      <mat-card-header>
+        <div class="card-header-content">
+          <mat-card-title>
+            <mat-icon *ngIf="tarefa.concluida" class="check-icon">check_circle</mat-icon>
+            {{ tarefa.titulo }}
+          </mat-card-title>
+        </div>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <p class="descricao">{{ tarefa.descricao || 'Sem descrição' }}</p>
+        <div class="meta-info">
+          <small>
+            <mat-icon>schedule</mat-icon>
+            Criada em: {{ tarefa.criadoEm | date: 'dd/MM/yyyy HH:mm' }}
+          </small>
+          <small *ngIf="tarefa.atualizadoEm && tarefa.atualizadoEm !== tarefa.criadoEm">
+            <mat-icon>update</mat-icon>
+            Atualizada em: {{ tarefa.atualizadoEm | date: 'dd/MM/yyyy HH:mm' }}
+          </small>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-icon-button 
+                [color]="tarefa.concluida ? 'accent' : 'primary'"
+                (click)="alternarStatus(tarefa)"
+                [matTooltip]="tarefa.concluida ? 'Marcar como pendente' : 'Marcar como concluída'">
+          <mat-icon>{{ tarefa.concluida ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+        </button>
+        
+        <button mat-icon-button color="primary" (click)="abrirFormulario(tarefa)" matTooltip="Editar">
+          <mat-icon>edit</mat-icon>
+        </button>
+        
+        <button mat-icon-button color="warn" (click)="deletar(tarefa.id)" matTooltip="Deletar">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <app-formulario-tarefa
+    *ngIf="mostrarFormulario"
+    [tarefa]="tarefaParaEditar"
+    (fechar)="fecharFormulario()"
+    (salvar)="onTarefaSalva()">
+  </app-formulario-tarefa>
+</div>
