@@ -109,7 +109,7 @@ git --version
 
 ```bash
 # Clone o repositório
-git clone <url-do-repositorio>
+git clone https://github.com/EndrilGab/GerenciadorTarefas.git
 
 # Entre na pasta
 cd gerenciadortarefas
